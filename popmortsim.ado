@@ -168,8 +168,6 @@ quietly {
 		gen double endofinterval = timeagechange // Initially define the end of each mortality interval using the age-change time.
 		drop timeagechange
 		
-		
-		
 		replace endofinterval = timeyearchange if mod(rownum, 2) == 0 & agefirst == 1 // If age changes first, use the calendar-year change for alternating intervals where appropriate.
 		replace endofinterval = timeyearchange if mod(rownum, 2) == 1 & agefirst == 0 // If the calendar year changes first, use the calendar-year change for the corresponding alternating intervals.
 		drop agefirst timeyearchange
@@ -188,7 +186,6 @@ quietly {
 
 		merge m:1 `pmage' `pmyear' `pmother' using `using', keep(matched master) // Match every simulated interval to the corresponding mortality rate in the population mortality file using age, year, and any additional matching variables.
 		
-		
 		qui count if _merge == 1 // Count intervals for which no matching population mortality record was found.
 		if r(N) > 0 {
 			local nunmatched = r(N)
@@ -202,15 +199,13 @@ quietly {
 		// Calculate the cumulative expected hazard at the end of each interval.
 		// Hazard contribution = mortality rate × interval length.
 		bysort `id' (rownum): gen double cumhazardend = sum(`pmrate'*(endofinterval - startofinterval))
-		//drop endofinterval
+		drop endofinterval
 		
 		bysort `id' (rownum): gen cumhazardstart = cumhazardend[_n-1] // Calculate the cumulative hazard at the start of each interval.
 		replace cumhazardstart = 0 if missing(cumhazardstart) // The cumulative hazard at the beginning of follow-up is zero.
 	
-	
 		bysort `id' (rownum): gen Hstar = -ln(runiform()) if _n==1 // Generate one random exponential hazard threshold for each individual.
 		
-			
 		// Determine whether the simulated event occurs within each interval.
 		// An event occurs when the individual's random hazard threshold falls between the cumulative hazards at the start and end of the interval.
 		bysort `id' (rownum): gen event = Hstar[1] > cumhazardstart & Hstar[1] <= cumhazardend
@@ -219,8 +214,6 @@ quietly {
 		bysort `id' (rownum): gen double tstar = startofinterval + (Hstar[1]-cumhazardstart)/`pmrate' if event
 		drop startofinterval cumhazardstart cumhazardend
 		
-
-		
 		// Create an event indicator variable and a variable containing the time at which the event occurs
 		// This is the maximum of the event varaible and the tstar variable respectively
 		bysort `id': egen d = max(event)
@@ -228,7 +221,6 @@ quietly {
 
 		replace d = 0 if t > `maxtime' // If an individual has an event after the maxtime, this individual is alive at the end of follow-up and therefore their event indicator is set to 0.
 		replace t = `maxtime' if d == 0 // If an individual did not have an event, set their event time to the maximum follow-up time (censoring)
-	
 		
 		bysort `id' (rownum): keep if _n==1
 		drop rownum
