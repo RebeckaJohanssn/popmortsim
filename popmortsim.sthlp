@@ -119,7 +119,8 @@ Simulate survival time and death indicator using a popmort file with age variabl
 Set the maximum follow-up time 20 years.
 
 {phang2}
-{stata "popmortsim time dead using https://pclambert.net/data/popmort.dta, agediag(age) datediag(datediag) pmother(sex) maxtime(20)":. popmortsim time dead using https://pclambert.net/data/popmort.dta, agediag(age) datediag(diagdate) pmother(sex) maxtime(20)}{p_end}
+{stata "popmortsim time dead using https://pclambert.net/data/popmort.dta, agediag(age) datediag(datediag) pmother(sex) maxtime(20)":. 
+popmortsim time dead using https://pclambert.net/data/popmort.dta, agediag(age) datediag(diagdate) pmother(sex) maxtime(20)}{p_end}
 
 {title:Example 2}
 {pstd}
@@ -127,7 +128,8 @@ Use a popmort file in which deprevation is included.
 Note that the age variable is not {cmd:_age} and the year variable is not {cmd:_year} which is why the variable names need to be specified in the {cmd:pmage()} and {cmd:pmyear()} options, respectively.
 
 {phang2}
-{stata "popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, agediag(age) datediag(datediag) pmage(age) pmyear(year) pmother(sex dep)":. popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, agediag(age) datediag(diagdate) pmage(age) pmyear(year) pmother(sex dep)}{p_end}
+{stata "popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, agediag(age) datediag(datediag) pmage(age) pmyear(year) pmother(sex dep)":.
+ popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, agediag(age) datediag(diagdate) pmage(age) pmyear(year) pmother(sex dep)}{p_end}
 
 {title:Author}
 
