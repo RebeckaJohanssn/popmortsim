@@ -1,0 +1,16 @@
+v 3
+* d lines display package description text
+* the first d line is the title, and the remaining ones are text
+* blank d lines display a blank line
+d popmortsim
+d
+d Distribution-Date: 20260917
+d
+d contact:  rebecka.johansson.2@ki.se
+d
+: :
+* f identifies the component files
+f popmortsim.ado
+f popmortsim.sthlp
+: : :
+e

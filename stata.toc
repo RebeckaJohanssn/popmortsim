@@ -1,0 +1,13 @@
+* lines starting with * are comments; they are ignored
+* blank lines are ignored, too
+* v indicates version—specify v 3, which is the current version of .toc files
+v 3
+* d lines display description text
+* the first d line is the title, and the remaining ones are text
+* blank d lines display a blank line
+d Rebecka Johansson, Department of Medical Epidemiology, Karolinska Institutet
+d:
+: : :
+* p lines display packages
+p popmortsim - simulate from a popmort file
+: : :
