@@ -91,45 +91,63 @@ A random threshold is generated and compared to the cumulative hazard. Death is 
 {pstd}
 All examples use the following data setup. You will need to clear data in memory before running.
 
+{phang2}
+. set seed 27889 {p_end}
+{phang2}
+. set obs 1000{p_end}
+{phang2}
+. gen agediag = runiform(70,90){p_end}
+{phang2}
+. gen datediag = runiformint(mdy(1,1,1985), mdy(12,31,1990)){p_end}
+{phang2}
+. format %d datediag{p_end}
+{phang2}
+. gen sex = runiformint(1,2){p_end}
+{phang2}
+. gen dep = runiformint(1,5){p_end}
+
 {pmore}
-{stata "set seed 27889":. set seed 27889}{p_end}
-{pmore}
-{stata "set obs 1000":. set obs 1000}{p_end}
-{pmore}
-{stata "gen agediag = runiform(70,90)":. gen agediag = runiform(70,90)}{p_end}
-{pmore}
-{stata "gen datediag = runiformint(mdy(1,1,1985), mdy(12,31,1990))":. gen datediag = runiformint(mdy(1,1,1985), mdy(12,31,1990))}{p_end}
-{pmore}
-{stata "format %d datediag":. format %d datediag}{p_end}
-{pmore}
-{stata "gen sex = runiformint(1,2)":. gen sex = runiformint(1,2)}{p_end}
-{pmore}
-{stata "gen dep = runiformint(1,5)":. gen dep = runiformint(1,5)}{p_end}
+({stata "popmortsim_example, egnumber(0)":click to run})
 
 {title:Example 1}
 {pstd}
 Simulate survival time and death indicator using a popmort file with age variable {cmd:_age}, year variable {cmd:_year} and additional stratification by sex.
 
 {phang2}
-{stata "popmortsim time dead using https://pclambert.net/data/popmort.dta, agediag(age) datediag(datediag) pmother(sex)":. popmortsim time dead using https://pclambert.net/data/popmort.dta, agediag(age) datediag(diagdate) pmother(sex)}{p_end}
+. popmortsim time dead using https://pclambert.net/data/popmort.dta, ///{p_end}
+{p 16 20 2}
+agediag(agediag) datediag(datediag) pmother(sex){p_end}
+
+{pmore}
+({stata "popmortsim_example, egnumber(1)":click to run})
 
 
 {title:Example 2}
 {pstd}
-Set the maximum follow-up time 20 years.
+Set the maximum follow-up time to 20 years.
 
 {phang2}
-{stata "popmortsim time dead using https://pclambert.net/data/popmort.dta, agediag(age) datediag(datediag) pmother(sex) maxtime(20)":. 
-popmortsim time dead using https://pclambert.net/data/popmort.dta, agediag(age) datediag(diagdate) pmother(sex) maxtime(20)}{p_end}
+. popmortsim time dead using https://pclambert.net/data/popmort.dta, ///{p_end}
+{p 16 20 2}
+agediag(agediag) datediag(datediag) pmother(sex) maxtime(20) {p_end}
 
-{title:Example 2}
+{pmore}
+({stata "popmortsim_example, egnumber(2)":click to run})
+
+
+{title:Example 3}
 {pstd}
 Use a popmort file in which deprevation is included. 
-Note that the age variable is not {cmd:_age} and the year variable is not {cmd:_year} which is why the variable names need to be specified in the {cmd:pmage()} and {cmd:pmyear()} options, respectively.
+Note that the age variable is not {cmd:_age} and the year variable is not {cmd:_year}. Therefore the variable names need to be specified in the {cmd:pmage()} and {cmd:pmyear()} options, respectively.
 
 {phang2}
-{stata "popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, agediag(age) datediag(datediag) pmage(age) pmyear(year) pmother(sex dep)":.
- popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, agediag(age) datediag(diagdate) pmage(age) pmyear(year) pmother(sex dep)}{p_end}
+. popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, ///{p_end}
+{p 16 20 2}
+agediag(agediag) datediag(datediag) pmage(age) pmyear(year) pmother(sex dep){p_end}
+
+{pmore}
+({stata "popmortsim_example, egnumber(3)":click to run})
+
 
 {title:Author}
 

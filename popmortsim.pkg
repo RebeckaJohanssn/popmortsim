@@ -11,6 +11,7 @@ d
 : :
 * f identifies the component files
 f popmortsim.ado
+f popmortsim_example.ado
 f popmortsim.sthlp
 : : :
 e
