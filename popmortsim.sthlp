@@ -127,7 +127,7 @@ agediag(agediag) datediag(datediag) pmother(sex){p_end}
 Set the maximum follow-up time to 20 years.
 
 {phang2}
-. popmortsim time dead using https://pclambert.net/data/popmort.dta, ///{p_end}
+. popmortsim time2 dead2 using https://pclambert.net/data/popmort.dta, ///{p_end}
 {p 16 20 2}
 agediag(agediag) datediag(datediag) pmother(sex) maxtime(20) {p_end}
 
@@ -141,7 +141,7 @@ Use a popmort file in which deprevation is included.
 Note that the age variable is not {cmd:_age} and the year variable is not {cmd:_year}. Therefore the variable names need to be specified in the {cmd:pmage()} and {cmd:pmyear()} options, respectively.
 
 {phang2}
-. popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, ///{p_end}
+. popmortsim time3 dead3 using https://pclambert.net/data/popmort_NW.dta, ///{p_end}
 {p 16 20 2}
 agediag(agediag) datediag(datediag) pmage(age) pmyear(year) pmother(sex dep){p_end}
 

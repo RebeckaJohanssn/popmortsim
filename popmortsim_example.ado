@@ -34,20 +34,20 @@ popmortsim time dead using https://pclambert.net/data/popmort.dta, ///
 	
 	else if `egnumber' == 2 {
 		display ///
-			". popmortsim time dead using https://pclambert.net/data/popmort.dta, ///" _newline ///
+			". popmortsim time2 dead2 using https://pclambert.net/data/popmort.dta, ///" _newline ///
 "agediag(agediag) datediag(datediag) pmother(sex) maxtime(20)"
 
-popmortsim time dead using https://pclambert.net/data/popmort.dta, ///
+popmortsim time2 dead2 using https://pclambert.net/data/popmort.dta, ///
 	agediag(agediag) datediag(datediag) pmother(sex) maxtime(20)
 	}
 	
 	
 	else if `egnumber' == 3 {
 		display ///
-			". popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, ///" _newline ///
+			". popmortsim time3 dead3 using https://pclambert.net/data/popmort_NW.dta, ///" _newline ///
 "agediag(agediag) datediag(datediag) pmage(age) pmyear(year) pmother(sex dep)"
 
-popmortsim time dead using https://pclambert.net/data/popmort_NW.dta, ///
+popmortsim time3 dead3 using https://pclambert.net/data/popmort_NW.dta, ///
 	agediag(agediag) datediag(datediag) pmage(age) pmyear(year) pmother(sex dep)
 	}
 end
