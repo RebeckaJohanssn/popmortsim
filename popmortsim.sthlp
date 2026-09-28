@@ -48,14 +48,21 @@
 The program generates two new variables. The first contains simulated survival time and the second contains a simulated event indicator, where 1 indicates death and 0 indicates that the individual remains alive until the end of follow-up.
 
 {pstd}
-{cmd:using} {it:filename} specifies a file containing general-population mortality rates typically stratified by age, sex, calendar year and potentially other variables. In the {cmd:using} file, age must be specified in one-year increments and calendar year in one-year intervals.
+{cmd:using} {it:filename} specifies a file containing general-population mortality rates typically stratified by age, sex, calendar year and potentially other variables. 
+In the {cmd:using} file, age must be specified in one-year increments and calendar year in one-year intervals.
 
 {pstd}
-For each observation in the dataset, the command uses the individual's age at diagnosis ({cmd:agediag()}) and date of diagnosis ({cmd:datediag()}) to construct intervals during follow-up over which the individual's age and/or calendar year changes. The population mortality rate corresponding to each interval is then obtained from the population mortality file.
+For each observation in the dataset, the command uses the individual's age at diagnosis ({cmd:agediag()}) and date of diagnosis ({cmd:datediag()})
+ to construct intervals during follow-up over which the individual's age and/or calendar year changes. 
+The population mortality rate corresponding to each interval is then obtained from the population mortality file.
 
 {pstd}
-The simulation is based on the cumulative hazard implied by the supplied population mortality rates. Consequently, the population mortality rates should be expressed as hazards or rates on the same time scale as the follow-up intervals, here years.
-A random threshold is generated and compared to the cumulative hazard. Death is assumed to occur at the time at which the cumulative hazard exceeds the threshold. The simulated event indicator is 1 if death occurs within the specified follow-up period and 0 otherwise. For individuals who survive beyond the maximum follow-up time, survival time is set to {cmd:maxtime()}.
+The simulation is based on the cumulative hazard implied by the supplied population mortality rates. 
+Consequently, the population mortality rates should be expressed as hazards or rates on the same time scale as the follow-up intervals, here years.
+A random threshold is generated and compared to the cumulative hazard. 
+Death is assumed to occur at the time at which the cumulative hazard exceeds the threshold. 
+The simulated event indicator is 1 if death occurs within the specified follow-up period and 0 otherwise. 
+For individuals who survive beyond the maximum follow-up time, survival time is set to {cmd:maxtime()}.
 
 
 {title:Options}
@@ -79,10 +86,10 @@ A random threshold is generated and compared to the cumulative hazard. Death is 
 {opt pmrate(varname)} name of the rate variable in the population mortality file. The default is {cmd:rate}. The rate should be expressed per person year. If you only have one year survival probabilities in the population mortality file, then you can obtain the rate using {cmd:gen rate = -ln(survprob)}, where {cmd:survprob} is the one year survival probability.
 
 {phang}
-{opt pmmaxage(#)} specifies the maximum age for which general-population mortality rates are provided in the population mortality file. Rates for individuals older than this value are assumed to be the same as for the maximum age {it:#}. The default maximum age is the maximum value of {cmd:pmage()} available in the provided popmort file.
+{opt pmmaxage(#)} specifies the maximum age for which general-population mortality rates are provided in the population mortality file. Rates for individuals older than this value are assumed to be the same as for the maximum age {it:#}. The default maximum age is 99.
 
 {phang}
-{opt pmmaxyear(#)} specifies the maximum year for which population mortality rates are provided in the population mortality file. Rates for individuals still at risk after this year are assumed to be the same as for the maximum year {it:#}. The default maximum year is the maximum value of {cmd:pmyear()} available in the provided population mortality file. This option is ignored when {cmd:pmyear(.)} is specified.
+{opt pmmaxyear(#)} specifies the maximum year for which population mortality rates are provided in the population mortality file. Rates for individuals still at risk after this year are assumed to be the same as for the maximum year {it:#}. The default maximum year is 10000.
 
 {phang}
 {opt maxtime(#)} specifies the maximum follow-up time in years. The default is 10 years. The value must be a positive integer. Individuals for whom the simulated death time exceeds {cmd:maxtime()} are assigned an event indicator of 0 and a survival time equal to {cmd:maxtime()}.

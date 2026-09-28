@@ -18,8 +18,8 @@ program define popmortsim, sortpreserve
 	pmyear(string) /// name of year variable in popmort file, default is _year (pmyear(.) if no year variable)
 	pmrate(string) /// name of mortality rate variable in popmort file, default is rate
 	pmother(varlist) /// optional: name of other variables in the popmort file, must also be variables in the dataset
-	pmmaxage(real -1) /// maximum age in popmort file, default is the maximum age in the provided popmort file
-    pmmaxyear(real -1) /// maximum year in popmort file, default is the maximum year in the provided popmort file
+	pmmaxage(real 99) /// maximum age in popmort file, default is 99
+    pmmaxyear(real 10000) /// maximum year in popmort file, default is 10000
 	maxtime(real 10)] /// maximum follow-up time in years, default is 10 years.
 	
 	
@@ -37,30 +37,8 @@ program define popmortsim, sortpreserve
 	if "`pmrate'" == "" local pmrate rate
 	if "`pmyear'" == "" local pmyear _year
 	else if "`pmyear'" == "." local pmyear
-		
+			
 	
-	// Load the population mortality data into a temporary frame.
-	// This frame is used to determine the maximum available age and year.
-	tempname popmortdata
-	qui frame create `popmortdata'
-	qui frame `popmortdata': use "`usingfilename'", clear
-
-	// Default maximum age to the maximum age available in the population mortality file if pmmaxage() was not specified.
-	if `pmmaxage' == -1 {
-		qui frame `popmortdata': summarize `pmage', meanonly
-		local pmmaxage = r(max)
-	}
-
-	// Default maximum year to maximum available in population mortality file.
-	// This is only done when a year variable is being used.
-	if `pmmaxyear' == -1 & "`pmyear'" != "" {
-		quietly frame `popmortdata': summarize `pmyear', meanonly
-		local pmmaxyear = r(max)
-	}
-
-	// The temporary frame is no longer needed.
-	frame drop `popmortdata'
-
 	// Check that the maximum age is a positive integer.
 	// Population mortality tables are expected to use integer ages.
 	if missing(`pmmaxage') | `pmmaxage' <= 0 | ///
@@ -68,8 +46,7 @@ program define popmortsim, sortpreserve
 		di as error "pmmaxage() must be a positive integer"
 		exit 198
 	}
-	
-	
+		
 	// If a year variable is being used, check that the maximum year is a positive integer.
 	if "`pmyear'" != "" {
 		if missing(`pmmaxyear') | `pmmaxyear' <= 0 | ///
@@ -88,7 +65,6 @@ program define popmortsim, sortpreserve
 		
 		}
 	}
-	
 	// Check that variables specified in pmother() are not also being used as the age, year, or mortality-rate variables.
 	foreach var in pmage pmyear pmrate {
 		local conflict: list pmother & `var'
@@ -111,7 +87,6 @@ program define popmortsim, sortpreserve
 			}
 		}
 	}
-	
 	
 	// Check that the combination of age, year, and any additional
 	// matching variables uniquely identifies records in the population mortality file.
@@ -154,6 +129,8 @@ quietly {
 		// Expand each individual into multiple rows to represent changes in age and calendar year throughout the specified maximum follow-up period.
 		// There are two potential changes per year plus the initial interval.
 		local nrows = `maxtime'*2+1
+		
+		
 		expand `nrows'
 
 		sort `id'
@@ -168,11 +145,16 @@ quietly {
 		gen double endofinterval = timeagechange // Initially define the end of each mortality interval using the age-change time.
 		drop timeagechange
 		
+		
+		
 		replace endofinterval = timeyearchange if mod(rownum, 2) == 0 & agefirst == 1 // If age changes first, use the calendar-year change for alternating intervals where appropriate.
 		replace endofinterval = timeyearchange if mod(rownum, 2) == 1 & agefirst == 0 // If the calendar year changes first, use the calendar-year change for the corresponding alternating intervals.
 		drop agefirst timeyearchange
 		
-		bysort `id' (rownum): gen startofinterval = endofinterval[_n-1] // For each individual, the start of an interval is the end of the previous interval.
+		
+		sort `id' (rownum)
+		by `id': gen startofinterval = endofinterval[_n-1] // For each individual, the start of an interval is the end of the previous interval.
+		
 		replace startofinterval = 0 if missing(startofinterval)
 			
 		gen `pmage' = floor(`agediag' + startofinterval) // Determine the integer age corresponding to the beginning of each interval.
@@ -186,6 +168,7 @@ quietly {
 
 		merge m:1 `pmage' `pmyear' `pmother' using `using', keep(matched master) // Match every simulated interval to the corresponding mortality rate in the population mortality file using age, year, and any additional matching variables.
 		
+		
 		qui count if _merge == 1 // Count intervals for which no matching population mortality record was found.
 		if r(N) > 0 {
 			local nunmatched = r(N)
@@ -197,22 +180,25 @@ quietly {
 		}
 
 		// Calculate the cumulative expected hazard at the end of each interval.
-		// Hazard contribution = mortality rate × interval length.
-		bysort `id' (rownum): gen double cumhazardend = sum(`pmrate'*(endofinterval - startofinterval))
+		// Hazard contribution = mortality rate × interval length.'
+		sort `id' (rownum)
+		by `id': gen double cumhazardend = sum(`pmrate'*(endofinterval - startofinterval))
 		drop endofinterval
 		
-		bysort `id' (rownum): gen cumhazardstart = cumhazardend[_n-1] // Calculate the cumulative hazard at the start of each interval.
+		by `id': gen cumhazardstart = cumhazardend[_n-1] // Calculate the cumulative hazard at the start of each interval.
 		replace cumhazardstart = 0 if missing(cumhazardstart) // The cumulative hazard at the beginning of follow-up is zero.
 	
-		bysort `id' (rownum): gen Hstar = -ln(runiform()) if _n==1 // Generate one random exponential hazard threshold for each individual.
+	
+		by `id': gen Hstar = -ln(runiform()) if _n==1 // Generate one random exponential hazard threshold for each individual.
 		
+			
 		// Determine whether the simulated event occurs within each interval.
 		// An event occurs when the individual's random hazard threshold falls between the cumulative hazards at the start and end of the interval.
-		bysort `id' (rownum): gen event = Hstar[1] > cumhazardstart & Hstar[1] <= cumhazardend
-		
+		by `id': gen event = Hstar[1] > cumhazardstart & Hstar[1] <= cumhazardend
 		// For intervals containing an event, calculate the exact simulated event time by interpolating within the interval assuming a constant mortality rate.
-		bysort `id' (rownum): gen double tstar = startofinterval + (Hstar[1]-cumhazardstart)/`pmrate' if event
+		by `id': gen double tstar = startofinterval + (Hstar[1]-cumhazardstart)/`pmrate' if event
 		drop startofinterval cumhazardstart cumhazardend
+
 		
 		// Create an event indicator variable and a variable containing the time at which the event occurs
 		// This is the maximum of the event varaible and the tstar variable respectively
@@ -232,7 +218,6 @@ quietly {
 		rename d `death'
 	}
 }	
-	
 	//merge temporary frame to original dataset, adding the time and death variables created by this program
 	qui frlink m:1 `id', frame(`longdata')
 	qui frget `time' `death', from(`longdata')
