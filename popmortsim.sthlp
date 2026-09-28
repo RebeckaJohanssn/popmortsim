@@ -111,7 +111,7 @@ All examples use the following data setup. You will need to clear data in memory
 {phang2}
 . gen agediag = runiform(70,90){p_end}
 {phang2}
-. gen datediag = runiformint(mdy(1,1,1985), mdy(12,31,1990)){p_end}
+. gen datediag = runiformint(mdy(1,1,1980), mdy(12,31,1985)){p_end}
 {phang2}
 . format %d datediag{p_end}
 {phang2}
@@ -137,12 +137,12 @@ agediag(agediag) datediag(datediag) pmother(sex){p_end}
 
 {title:Example 2}
 {pstd}
-Set the maximum follow-up time to 20 years.
+Set the maximum follow-up time to 20 years. Since the popmort file only includes years up to year 2000, the pmmaxyear option has to be specifies to not get an error.
 
 {phang2}
 . popmortsim time2 dead2 using https://pclambert.net/data/popmort.dta, ///{p_end}
 {p 16 20 2}
-agediag(agediag) datediag(datediag) pmother(sex) maxtime(20) {p_end}
+agediag(agediag) datediag(datediag) pmother(sex) maxtime(20) pmmaxyear(2000) {p_end}
 
 {pmore}
 ({stata "popmortsim_example, egnumber(2)":click to run})
