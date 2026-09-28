@@ -97,7 +97,8 @@ Rates for individuals older than this value are assumed to be the same as for th
 Rates for individuals still at risk after this year are assumed to be the same as for the maximum year {it:#}. The default maximum year is 10000.
 
 {phang}
-{opt maxtime(#)} specifies the maximum follow-up time in years. The default is 10 years. The value must be a positive integer. Individuals for whom the simulated death time exceeds {cmd:maxtime()} are assigned an event indicator of 0 and a survival time equal to {cmd:maxtime()}.
+{opt maxtime(#)} specifies the maximum follow-up time in years. The default is 10 years. The value must be a positive integer. Individuals for whom the simulated death time exceeds {cmd:maxtime()}
+are assigned an event indicator of 0 and a survival time equal to {cmd:maxtime()}.
 
 {title:Examples}
 {pstd}
@@ -150,7 +151,7 @@ agediag(agediag) datediag(datediag) pmother(sex) maxtime(20) {p_end}
 {title:Example 3}
 {pstd}
 Use a popmort file in which deprevation is included. 
-Note that the age variable is not {cmd:_age} and the year variable is not {cmd:_year}. Therefore the variable names need to be specified in the {cmd:pmage()} and {cmd:pmyear()} options, respectively.
+Note that the age variable is not {cmd:_age} and the year variable is not {cmd:_year}. Therefore, the variable names need to be specified in the {cmd:pmage()} and {cmd:pmyear()} options, respectively.
 
 {phang2}
 . popmortsim time3 dead3 using https://pclambert.net/data/popmort_NW.dta, ///{p_end}
