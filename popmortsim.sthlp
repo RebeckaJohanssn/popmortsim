@@ -77,19 +77,24 @@ For individuals who survive beyond the maximum follow-up time, survival time is 
 {opt pmage(varname)} gives the name of the age variable in the population mortality file. This variable cannot exist in the patient data file, but should exist in the population mortality file. The default is {cmd:_age}.
 
 {phang}
-{opt pmyear(varname)} gives the name of the year variable in the population mortality file. This variable cannot exist in the patient data file, but should exist in the population mortality file. The default is {cmd:_year}. If there is no year variable in the population mortality file, use {cmd: pmyear(.)}. 
+{opt pmyear(varname)} gives the name of the year variable in the population mortality file. This variable cannot exist in the patient data file, but should exist in the population mortality file. The default is {cmd:_year}. 
+If there is no year variable in the population mortality file, use {cmd: pmyear(.)}. 
 
 {phang}
-{opt pmother(varlist)} gives all the additional variables in the population mortality file. All variables listed should be in both the data and the population mortality file. Variables specified in {cmd:pmother()} must uniquely identify records in combination with {cmd:pmage()} and {cmd:pmyear()}.
+{opt pmother(varlist)} gives all the additional variables in the population mortality file. All variables listed should be in both the data and the population mortality file. 
+Variables specified in {cmd:pmother()} must uniquely identify records in combination with {cmd:pmage()} and {cmd:pmyear()}.
 
 {phang}
-{opt pmrate(varname)} name of the rate variable in the population mortality file. The default is {cmd:rate}. The rate should be expressed per person year. If you only have one year survival probabilities in the population mortality file, then you can obtain the rate using {cmd:gen rate = -ln(survprob)}, where {cmd:survprob} is the one year survival probability.
+{opt pmrate(varname)} name of the rate variable in the population mortality file. The default is {cmd:rate}. The rate should be expressed per person year. 
+If you only have one year survival probabilities in the population mortality file, then you can obtain the rate using {cmd:gen rate = -ln(survprob)}, where {cmd:survprob} is the one year survival probability.
 
 {phang}
-{opt pmmaxage(#)} specifies the maximum age for which general-population mortality rates are provided in the population mortality file. Rates for individuals older than this value are assumed to be the same as for the maximum age {it:#}. The default maximum age is 99.
+{opt pmmaxage(#)} specifies the maximum age for which general-population mortality rates are provided in the population mortality file. 
+Rates for individuals older than this value are assumed to be the same as for the maximum age {it:#}. The default maximum age is 99.
 
 {phang}
-{opt pmmaxyear(#)} specifies the maximum year for which population mortality rates are provided in the population mortality file. Rates for individuals still at risk after this year are assumed to be the same as for the maximum year {it:#}. The default maximum year is 10000.
+{opt pmmaxyear(#)} specifies the maximum year for which population mortality rates are provided in the population mortality file. 
+Rates for individuals still at risk after this year are assumed to be the same as for the maximum year {it:#}. The default maximum year is 10000.
 
 {phang}
 {opt maxtime(#)} specifies the maximum follow-up time in years. The default is 10 years. The value must be a positive integer. Individuals for whom the simulated death time exceeds {cmd:maxtime()} are assigned an event indicator of 0 and a survival time equal to {cmd:maxtime()}.
